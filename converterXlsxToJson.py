@@ -1,4 +1,3 @@
-from turtle import pd
 from numpy import nan
 import pandas
 import json
