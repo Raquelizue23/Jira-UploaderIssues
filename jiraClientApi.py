@@ -2,7 +2,6 @@ import requests
 from requests.auth import HTTPBasicAuth
 import json
 import streamlit as st
-
 class JiraApiService:
     def __init__(self, jira_url, email, api_token):
         self.base_url = jira_url
@@ -35,7 +34,7 @@ class JiraApiService:
         except requests.exceptions.RequestException as e:
             print(f"Error retrieving custom fields: {str(e)}")
             return None
-
+        
     def bulk_create_issues(self, issues_data):
         """
         Create multiple Jira issues in bulk
@@ -55,7 +54,6 @@ class JiraApiService:
                 auth=self.auth,
                 data=json.dumps(payload)
             )
-            # print(response.json())
             return response,response.json() 
             
         except requests.exceptions.RequestException as e:

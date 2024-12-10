@@ -1,16 +1,13 @@
-from numpy import nan
 import pandas
 import json
 import streamlit as st
 import io
 import random
 import string
-
 def generar_clave_aleatoria():
     caracteres = string.ascii_uppercase + string.digits  # Letras mayúsculas y números
     clave = ''.join(random.choices(caracteres, k=6))
     return clave
-
 def get_json_from_excel(excel_file):
     # Read all sheets from Excel
     data_set = pandas.read_excel(excel_file, sheet_name=None)
@@ -29,6 +26,7 @@ def get_json_from_excel(excel_file):
         ]
         
         # Create issue object with subtasks
+        #if issue.get('Issue_Story_Points')== nan else None,
         issue_key = generar_clave_aleatoria()
         issue_obj = {
             "Project_Key": issue.get('Project_Key'),
