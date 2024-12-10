@@ -55,7 +55,7 @@ class JiraApiService:
                 auth=self.auth,
                 data=json.dumps(payload)
             )
-
+            # print(response.json())
             return response,response.json() 
             
         except requests.exceptions.RequestException as e:

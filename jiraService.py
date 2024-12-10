@@ -38,7 +38,7 @@ def get_custom_fields():
             obj_custom_field['Effort'] = field['key']
         elif field['name'] == 'Epic Link':
             obj_custom_field['EpicLink'] = field['key']
-    
+    # print(obj_custom_field)
     return obj_custom_field
 
 def get_array_for_bulk(array_issues):
@@ -78,8 +78,8 @@ def create_bulk_subtasks(issues):
                         "parent": {
                             "key": issue["Id"]
                         },
-                        # custom_fields["Template"]: subtask["Template"],
-                        # custom_fields["ProcessGroup"]: subtask["Process_Group"],
+                        custom_fields["Template"]: subtask["Template"],
+                        custom_fields["ProcessGroup"]: subtask["Process_Group"],
                         "summary": subtask["SubTask"],
                         "timetracking": {
                             "originalEstimate": subtask["Effort"]
@@ -98,8 +98,8 @@ def create_bulk_subtasks(issues):
                         "parent": {
                             "id": issue["Id"]
                         },
-                        # custom_fields["Template"]: subtask["Template"],
-                        # custom_fields["ProcessGroup"]: subtask["Process_Group"],
+                        custom_fields["Template"]: subtask["Template"],
+                        custom_fields["ProcessGroup"]: subtask["Process_Group"],
                         "summary": subtask["SubTask"],
                         "timetracking": {
                             "originalEstimate": subtask["Effort"]
@@ -131,19 +131,25 @@ def bulk_create_issues_subtask(data_formarter, type):
     print("-----------------------------------------------------------")
     custom_fields = get_custom_fields()
     for issue in data_formarter.values():
-        obj_issue = {
+        fields  = {
             "fields": {
                 "project": {
                     "key": issue["Project_Key"]
                 },
                 "summary": issue["Issue_Summary"][:255] if issue["Issue_Summary"] else "",
                 "description": issue["Issue_Summary"],
-                custom_fields["StoryPoints"]: issue["Issue_Story_Points"],
                 "issuetype": {
                     "name": issue["Issue_Type"]
                 }
             }
         }
+        if issue["Issue_Type"] != "Task":
+            fields[custom_fields["StoryPoints"]] = issue["Issue_Story_Points"]
+        
+        obj_issue = {
+            "fields": fields
+        }
+        # print(obj_issue)
         issues.append(obj_issue)
     
     st.markdown(":blue-background[Inicia] proceso de creación de Issues")
@@ -158,6 +164,7 @@ def bulk_create_issues_subtask(data_formarter, type):
             if status_response.status_code == 400:
                 st.text(f"Error al hacer el bulk de Issues")
                 st.text_area("Payload de la petición", json.dumps(bulk), height=400)
+                st.text_area("Errors", json.dumps(bulk_issues), height=400)
             if status_response.status_code == 201:
                 if type=="all":
                     for i, issue in enumerate(data_formarter):
@@ -172,6 +179,7 @@ def bulk_create_issues_subtask(data_formarter, type):
         if status_response.status_code == 400:
             st.text(f"Error al hacer el bulk de Issues")
             st.text_area("Payload de la petición", json.dumps(issues), height=400)
+            st.text_area("Errors", json.dumps(bulk_issues), height=400)
         if status_response.status_code == 201:
             if type=="all":    
                 for i, issue in enumerate(data_formarter):

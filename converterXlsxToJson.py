@@ -29,7 +29,6 @@ def get_json_from_excel(excel_file):
         ]
         
         # Create issue object with subtasks
-        #if issue.get('Issue_Story_Points')== nan else None,
         issue_key = generar_clave_aleatoria()
         issue_obj = {
             "Project_Key": issue.get('Project_Key'),
